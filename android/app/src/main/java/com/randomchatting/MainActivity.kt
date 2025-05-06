@@ -1,4 +1,4 @@
-package com.randomchatting
+package com.codex.quickchat
 
 import com.facebook.react.ReactActivity
 import com.facebook.react.ReactActivityDelegate

@@ -1,4 +1,4 @@
-package com.randomchatting
+package com.codex.quickchat
 
 import android.app.Application
 import com.facebook.react.PackageList
