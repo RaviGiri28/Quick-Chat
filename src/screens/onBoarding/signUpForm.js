@@ -1,15 +1,19 @@
 import { Animated, Image, ScrollView, StyleSheet, Text, TextInput, TouchableNativeFeedback, TouchableOpacity, View } from 'react-native'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { use, useEffect, useRef, useState } from 'react'
 import { responsiveFontSize, responsiveHeight, responsiveWidth } from 'react-native-responsive-dimensions';
 import DateTimePicker from 'react-native-modal-datetime-picker';
 import GenderModal from '../modals/genderModal';
 import theme from '../../../theme';
 import LinearGradient from 'react-native-linear-gradient';
-import { getAuth, createUserWithEmailAndPassword, GoogleAuthProvider } from '@react-native-firebase/auth';
+import { getAuth, createUserWithEmailAndPassword, GoogleAuthProvider, signInWithCredential } from '@react-native-firebase/auth';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
+import { getFirestore } from '@react-native-firebase/firestore';
 const SignUpForm = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [username, setUsername] = useState(false);
   const [date, setDate] = useState(new Date());
   const [isDatePickerModalVisible, setDatePickerModalVisibility] = useState(false);
   const [gender, setGender]= useState('Select Gender');
@@ -43,8 +47,20 @@ const SignUpForm = () => {
       }
 
       const userCredential= await createUserWithEmailAndPassword(getAuth(),email,password)
+      const uid = userCredential.user.uid;
+
+      // Save user data to Firestore
+      await getFirestore().collection('users').doc(uid).set({
+        uid: uid,
+        firstName: firstName,
+        lastName: lastName,
+        username: username,
+        gender: gender,
+        dateOfBirth: date.toDateString(),
+      })
+      console.log('User registered and profile saved!');
       setMessage(`✅ Signed up as: ${userCredential.user.email}`);
-      console.log(userCredential.user.email);
+      console.log(userCredential.user.uid);
     }catch (error) {
       console.log(error.message);
       setMessage(`❌ Sign-up error: ${error.message}`);
@@ -59,28 +75,24 @@ const SignUpForm = () => {
   }, [])
   
 
-  const signInWithGoogle =async()=>{
+  const signUpWithGoogle =async()=>{
       // Check if your device supports Google Play
     await GoogleSignin.hasPlayServices({showPlayServicesUpdateDialog: true});
     //Get the user's ID token
     const getGoogleAuth= await GoogleSignin.signIn({prompt: 'select_account'});
-    idToken= getGoogleAuth.data?.idToken;
+    console.log('Google Sign-In ID Token:', getGoogleAuth.data.idToken);
+    
+    const idToken = getGoogleAuth.data?.idToken;
     if (!idToken) {
-    idToken= getGoogleAuth.idToken;
+      idToken = getGoogleAuth.data.idToken;
     }
     if (!idToken) {
-      throw new Error('No ID token found in Google sign-in response');
+      throw new Error('No ID token found');
     }
     // Create a new credential using the ID token
     const googleCredential= GoogleAuthProvider.credential(getGoogleAuth.data.idToken);
     // Sign-in the user with the credential
-    return getAuth().signInWithCredential(googleCredential)
-      .then((userCredential) => {
-        console.log('User signed in with Google:', userCredential.user.email);
-      })
-      .catch((error) => {
-        console.error('Error signing in with Google:', error.message);
-      });
+    return getAuth().signInWithCredential(googleCredential);
   }
   return (
     <ScrollView>
@@ -90,6 +102,8 @@ const SignUpForm = () => {
           <TextInput
             style={styles.input}
             placeholder="First Name"
+            value={firstName}
+            onChangeText={setFirstName}
           />
         </View>
         <View style={{ display: 'flex', flexDirection: 'column', marginBottom: responsiveWidth(1), paddingBottom: responsiveWidth(2), }}>
@@ -97,6 +111,8 @@ const SignUpForm = () => {
           <TextInput
             style={styles.input}
             placeholder="Last Name"
+            value={lastName}
+            onChangeText={setLastName}
           />
         </View>
       </View>
@@ -116,6 +132,8 @@ const SignUpForm = () => {
           style={styles.emailInput}
           placeholder="Enter Username"
           textContentType='username'
+          value={username}
+          onChangeText={setUsername}
         />
       </View>
       <View style={{marginBottom: responsiveWidth(1), paddingBottom: responsiveWidth(2), }}>
@@ -193,7 +211,7 @@ const SignUpForm = () => {
         </View>
       </Animated.View>
       <Text style={{fontWeight:'600',fontSize:responsiveFontSize(2.2),color:'grey',alignSelf:'center',}}>or</Text>
-      <TouchableOpacity activeOpacity={0.8} onPress={()=>signInWithGoogle().catch((error)=>console.log(error.message))}>
+      <TouchableOpacity activeOpacity={0.8} onPress={()=> signUpWithGoogle().catch((error)=>console.log(error.message))}>
         <View style={styles.googleButton}>
             <Image
                 source={require('../../assets/google.png')}

@@ -1,9 +1,10 @@
 import { Animated, Image, ScrollView, StyleSheet, Text, TextInput, TouchableNativeFeedback, TouchableOpacity, View } from 'react-native'
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { responsiveFontSize, responsiveWidth } from 'react-native-responsive-dimensions';
 import theme from '../../../theme';
 import LinearGradient from 'react-native-linear-gradient';
-import { getAuth, signInWithEmailAndPassword } from '@react-native-firebase/auth';
+import { getAuth, GoogleAuthProvider, signInWithEmailAndPassword} from '@react-native-firebase/auth';
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
 
 const LoginForm = () => {
     const [email, setEmail] = useState('');
@@ -42,6 +43,30 @@ const LoginForm = () => {
         console.log('❌ Error:', errorCode, errorMessage);
       });
     };
+
+    useEffect(() => {
+        GoogleSignin.configure({
+          webClientId: '503906370756-ibcqn7amgahkltccada7r8ebid449ge4.apps.googleusercontent.com',
+          offlineAccess: true,
+        });
+      }, [])
+
+    const signInWithGoogle = async() => {
+      // Handle Google sign-in logic here
+     try{
+      await GoogleSignin.hasPlayServices();
+      const { idToken } = await GoogleSignin.signIn();
+      console.log('Google Sign-In ID Token:', idToken);
+      
+      const googleCredential = GoogleAuthProvider.credential(idToken);
+
+      //Sign-in with Credentials
+      const userCredential = await signInWithCredential(googleCredential);
+      console.log('✅ Google Sign-In successful:', userCredential.user);
+     }catch(error){
+      console.log('❌ Google Sign-In error:', error.message);
+     }
+    }
   return (
     <ScrollView>
       <View style={{ marginBottom: responsiveWidth(1), paddingBottom: responsiveWidth(2), }}>
@@ -92,7 +117,7 @@ const LoginForm = () => {
       </Animated.View>
       <Text style={{fontWeight:'600',fontSize:responsiveFontSize(2.2),color:'grey',alignSelf:'center',}}>or</Text>
      
-     <TouchableOpacity activeOpacity={0.8} onPress={""}>
+     <TouchableOpacity activeOpacity={0.8} onPress={()=>signInWithGoogle().catch((error)=>console.log(error.message))}>
      <View style={styles.googleButton}>
       <Image
         source={require('../../assets/google.png')}
