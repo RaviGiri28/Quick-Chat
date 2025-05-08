@@ -6,7 +6,7 @@ import GenderModal from '../modals/genderModal';
 import theme from '../../../theme';
 import LinearGradient from 'react-native-linear-gradient';
 import { getAuth, createUserWithEmailAndPassword, GoogleAuthProvider, signInWithCredential } from '@react-native-firebase/auth';
-import { GoogleSignin } from '@react-native-google-signin/google-signin';
+import { GoogleSignin, statusCodes } from '@react-native-google-signin/google-signin';
 import { getFirestore } from '@react-native-firebase/firestore';
 const SignUpForm = () => {
   const [email, setEmail] = useState('');
@@ -18,6 +18,7 @@ const SignUpForm = () => {
   const [isDatePickerModalVisible, setDatePickerModalVisibility] = useState(false);
   const [gender, setGender]= useState('Select Gender');
   const [isGenderModalVisible, setGenderModalVisibility]= useState(false);
+  const [signUp, setSignUp] = useState(false);
   const scaleAnim = useRef(new Animated.Value(1)).current;
   const [message, setMessage] = useState('');
 
@@ -53,9 +54,9 @@ const SignUpForm = () => {
       await getFirestore().collection('users').doc(uid).set({
         uid: uid,
         firstName: firstName,
-        lastName: lastName,
-        username: username,
         gender: gender,
+        username: username,
+        lastName: lastName,
         dateOfBirth: date.toDateString(),
       })
       console.log('User registered and profile saved!');
@@ -76,23 +77,40 @@ const SignUpForm = () => {
   
 
   const signUpWithGoogle =async()=>{
+    if (signUp) {
+      console.warn('Signup in progress...');
+      return;
+    }
+    try {
+      setSignUp(true);
       // Check if your device supports Google Play
-    await GoogleSignin.hasPlayServices({showPlayServicesUpdateDialog: true});
-    //Get the user's ID token
-    const getGoogleAuth= await GoogleSignin.signIn({prompt: 'select_account'});
-    console.log('Google Sign-In ID Token:', getGoogleAuth.data.idToken);
-    
-    const idToken = getGoogleAuth.data?.idToken;
-    if (!idToken) {
-      idToken = getGoogleAuth.data.idToken;
+      await GoogleSignin.hasPlayServices({showPlayServicesUpdateDialog: true});
+      //Get the user's ID token
+      const getGoogleAuth= await GoogleSignin.signIn({prompt: 'select_account'});
+      console.log('Google Sign-In ID Token:', getGoogleAuth.data.idToken);
+      
+      const idToken = getGoogleAuth.data?.idToken;
+      if (!idToken) {
+        idToken = getGoogleAuth.data.idToken;
+      }
+      if (!idToken) {
+        throw new Error('No ID token found');
+      }
+      // Create a new credential using the ID token
+      const googleCredential= GoogleAuthProvider.credential(getGoogleAuth.data.idToken);
+      // Sign-in the user with the credential
+      return getAuth().signInWithCredential(googleCredential);
+    } catch (error) {
+      if(error.code === statusCodes.SIGN_IN_CANCELLED){
+        console.log('User cancelled the sign-up process');
+      }else if(error.code === statusCodes.IN_PROGRESS){
+        console.log('Sign-up in progress...');
+    }else{
+        console.log('Sign-up error:', error.message);
     }
-    if (!idToken) {
-      throw new Error('No ID token found');
+    }finally{
+      setSignUp(false);
     }
-    // Create a new credential using the ID token
-    const googleCredential= GoogleAuthProvider.credential(getGoogleAuth.data.idToken);
-    // Sign-in the user with the credential
-    return getAuth().signInWithCredential(googleCredential);
   }
   return (
     <ScrollView>
