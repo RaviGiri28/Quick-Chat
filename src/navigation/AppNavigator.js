@@ -1,6 +1,6 @@
 import React from 'react'
 import { createStackNavigator } from '@react-navigation/stack'
-import { StyleSheet, Text, View } from 'react-native'
+import { StyleSheet } from 'react-native'
 import OnBoarding from '../screens/onBoarding/onBoarding';
 import Register from '../screens/onBoarding/register';
 import LoginForm from '../screens/onBoarding/loginForm';
@@ -20,7 +20,7 @@ export default function AppNavigator({user}) {
         </>
       ):(
         <>
-        <Stack.Screen name='Index' component={Index} options={{ headerShown: true }} />
+        <Stack.Screen name='Index' component={Index} options={{ headerShown: false }} />
         </>
       )
       }
