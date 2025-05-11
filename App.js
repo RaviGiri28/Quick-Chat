@@ -7,63 +7,64 @@ import { getAuth, onAuthStateChanged } from '@react-native-firebase/auth'
 import { responsiveWidth } from 'react-native-responsive-dimensions'
 import theme from './theme'
 import { GoogleSignin } from '@react-native-google-signin/google-signin'
+import Connectivity from './connectivity'
 
 enableScreens();
 
 export default function App() {
-  const[initializing, setInitializing]= useState(true);
-  const[user, setUser]=useState(null);
+  const [initializing, setInitializing] = useState(true);
+  const [user, setUser] = useState(null);
 
-   useEffect(() => {
-      GoogleSignin.configure({
-        webClientId: '503906370756-ibcqn7amgahkltccada7r8ebid449ge4.apps.googleusercontent.com',
-        offlineAccess: true,
-      });
-    }, [])
-    
-  const handleAuthStateChanged=async(user)=>{
+  useEffect(() => {
+    GoogleSignin.configure({
+      webClientId: '503906370756-ibcqn7amgahkltccada7r8ebid449ge4.apps.googleusercontent.com',
+      offlineAccess: true,
+    });
+  }, [])
+
+  const handleAuthStateChanged = async (user) => {
     if (user) {
-      try{
+      try {
         // Reload the user's authentication state
         await user.reload();
-        const userData= getAuth().currentUser;
+        const userData = getAuth().currentUser;
         // If the user is still valid, set the user state
         if (userData) {
           setUser(userData);
         } else {
           // If the user is no longer valid, clear the user state
           setUser(null);
-          try{
+          try {
             await GoogleSignin.signOut();
-          }catch(e){
+          } catch (e) {
+            console.error('Error signing out:', e.message);
+          }
+        }
+      } catch (error) {
+        console.error('Error reloading user:', error);
+        setUser(null);
+        try {
+          await GoogleSignin.signOut();
+        } catch (e) {
           console.error('Error signing out:', e.message);
         }
       }
-      }catch (error) {
-        console.error('Error reloading user:', error);
-        setUser(null);
-        try{
-          await GoogleSignin.signOut();
-        }catch(e){
-        console.error('Error signing out:', e.message);
-      }      
-    }
-    }else{
+    } else {
       setUser(null);
-      try{
+      try {
         await GoogleSignin.signOut();
-      }catch(e){
-      console.error('Error signing out:', e.message);
-    }    
-  }
+      } catch (e) {
+        console.error('Error signing out:', e.message);
+      }
+    }
     if (initializing) setInitializing(false);
   };
 
   useEffect(() => {
-    const unsubscribe= onAuthStateChanged(getAuth(), handleAuthStateChanged)
+    const unsubscribe = onAuthStateChanged(getAuth(), handleAuthStateChanged)
     return unsubscribe;
   }, [])
-  
+
   if (initializing) {
     return (
       <View style={styles.loader}>
@@ -71,11 +72,13 @@ export default function App() {
       </View>
     );
   }
-  
+
   return (
-    <NavigationContainer>
-      <AppNavigator user={user}/>
-    </NavigationContainer>
+    <Connectivity>
+      <NavigationContainer>
+        <AppNavigator user={user} />
+      </NavigationContainer>
+    </Connectivity>
   );
 }
 
