@@ -10,13 +10,16 @@ import FindMatchComponent from '../../components/findMatchComponent'
 import Addcoins from '../../components/addcoins'
 import SetUpProfileComponent from '../../components/setUpProfileComponent'
 import CoinsTrack from '../../components/coinsTrack'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import ConcaveButtonStartChat from '../../components/startChatButton'
 const Index = () => {
   const uid = getAuth().currentUser?.uid;
   const svgCode = multiavatar(uid)
+  const insets = useSafeAreaInsets();
   return (
     <View style={styles.parentContainer}>
       <LinearGradient colors={['#f3d1c4', '#fff']} start={{ x: 0, y: 0 }}
-        end={{ x: 0, y: 1 }} style={{ flex: 1, }}>
+        end={{ x: 0, y: 1 }} style={{ flex: 1,paddingTop:insets.top }}>
         <View style={styles.container}>
           <View style={styles.headerArea}>
             <View style={{ alignItems: 'flex-start', }}>
@@ -34,6 +37,8 @@ const Index = () => {
         <SetUpProfileComponent/>
         <CoinsTrack/>
         </View>
+        <View style={{borderBottomWidth:1, borderColor:'grey', borderStyle:'dashed',marginHorizontal:responsiveWidth(3),top:responsiveWidth(3),}}/>
+        <ConcaveButtonStartChat/>
       </LinearGradient>
     </View>
   )
@@ -45,6 +50,7 @@ const styles = StyleSheet.create({
   parentContainer: {
     flex: 1,
     backgroundColor: theme.colors.light,
+
   },
   container: {
     paddingBottom: responsiveWidth(1),
@@ -62,7 +68,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: responsiveWidth(3),
     justifyContent: 'space-between',
-    paddingTop: responsiveWidth(2),
   },
   headerLeft: {
     display: 'flex',
