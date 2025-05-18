@@ -8,7 +8,7 @@ import CircularProgressBar from './circularProgressBar';
 const SetUpProfileComponent = () => {
     return (
         <TouchableOpacity activeOpacity={0.8} onPress={() => console.log('Set up profile')}>
-            <LinearGradient colors={['#C0C0C0', '#FFC0CB']} start={{ x: 0, y: 0 }}
+            <LinearGradient colors={['#fedbcc', '#fed7a9']} start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }} style={styles.container}>
                 <View style={{ paddingVertical: responsiveWidth(2.5), bottom: responsiveWidth(3) }}>
                     <CircularProgressBar progress={0.95} radius={35} strokeWidth={7} />

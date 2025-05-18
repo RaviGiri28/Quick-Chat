@@ -8,6 +8,7 @@ import { responsiveWidth } from 'react-native-responsive-dimensions'
 import theme from './theme'
 import { GoogleSignin } from '@react-native-google-signin/google-signin'
 import Connectivity from './connectivity'
+import { GestureHandlerRootView } from 'react-native-gesture-handler'
 
 enableScreens();
 
@@ -74,11 +75,13 @@ export default function App() {
   }
 
   return (
+    <GestureHandlerRootView style={{ flex: 1 }}>
     <Connectivity>
       <NavigationContainer>
         <AppNavigator user={user} />
       </NavigationContainer>
     </Connectivity>
+    </GestureHandlerRootView>
   );
 }
 

@@ -1,0 +1,83 @@
+import React from 'react'
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
+import Icon from 'react-native-vector-icons/Ionicons' // Or use your preferred icon package
+import Index from '../screens/home'
+import Profile from '../screens/home/profile'
+import { Pressable, StyleSheet, Text, View } from 'react-native'
+import { responsiveWidth } from 'react-native-responsive-dimensions'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import referCoins from '../screens/home/referCoins'
+
+const Tab = createBottomTabNavigator();
+const TabButton = ({ children, onPress }) => (
+    <Pressable onPress={onPress}
+        android_ripple={{ radius: 30 }}
+        style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+        {children}
+    </Pressable>
+)
+
+export default function BottomTabNavigator() {
+    const insets= useSafeAreaInsets();
+
+  return (
+    <Tab.Navigator initialRouteName='Home'
+      screenOptions={{
+        tabBarActiveTintColor: 'tomato',
+        tabBarInactiveTintColor: 'gray',
+        headerShown: false,
+        tabBarStyle: {...styles.tabBar,paddingBottom:insets.left},
+        tabBarShowLabel: false,
+      }}>
+         <Tab.Screen 
+          name="Home"
+          children={Index}
+          options={{
+            tabBarIcon: ({ focused }) => (
+            <Icon name="home" size={24} color={focused ? '#FF5A5F' : '#999'} />
+            ),
+            tabBarButton: (props) => <TabButton {...props} />,
+          }}
+        />
+         <Tab.Screen
+          name="Wallet"
+          children={referCoins}
+          options={{
+            tabBarIcon: ({ focused }) => (
+              <Icon name="wallet" size={24} color={focused ? '#FF5A5F' : '#999'} />
+            ),
+            tabBarButton: (props) => <TabButton {...props} />,
+          }}
+        />
+         <Tab.Screen
+        name="Profile"
+        component={Profile}
+        options={{
+          tabBarIcon: ({ focused }) => (
+            <Icon name="person" size={24} color={focused ? '#FF5A5F' : '#999'} />
+          ),
+          tabBarButton: (props) => <TabButton {...props} />,
+        }}
+      />
+    </Tab.Navigator>
+  )
+}
+const styles= StyleSheet.create({
+    tabBar: {
+    position:'absolute',
+    bottom:responsiveWidth(7),
+    backgroundColor: '#fff',
+    borderRadius:responsiveWidth(50),
+    height:responsiveWidth(14),
+    marginHorizontal:responsiveWidth(7),
+    elevation: 5,
+    shadowColor: '#000',
+    alignItems:'center',
+    justifyContent:'center',
+  },
+    screen: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+});

@@ -1,5 +1,5 @@
 import React from 'react'
-import { Image, StyleSheet, Text, View } from 'react-native'
+import { Image, Pressable, StyleSheet, Text, TouchableNativeFeedback, View } from 'react-native'
 import theme from '../../../theme'
 import { responsiveFontSize, responsiveWidth } from 'react-native-responsive-dimensions'
 import LinearGradient from 'react-native-linear-gradient'
@@ -12,14 +12,17 @@ import SetUpProfileComponent from '../../components/setUpProfileComponent'
 import CoinsTrack from '../../components/coinsTrack'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import ConcaveButtonStartChat from '../../components/startChatButton'
+import { useNavigation } from '@react-navigation/native'
+
 const Index = () => {
   const uid = getAuth().currentUser?.uid;
   const svgCode = multiavatar(uid)
   const insets = useSafeAreaInsets();
+  const navigation = useNavigation();
   return (
     <View style={styles.parentContainer}>
-      <LinearGradient colors={['#f3d1c4', '#fff']} start={{ x: 0, y: 0 }}
-        end={{ x: 0, y: 1 }} style={{ flex: 1,paddingTop:insets.top }}>
+      <LinearGradient colors={['#ffecca', '#fff6e5','#ffeac7']} start={{ x: 0, y: 0 }}
+        end={{ x: 0, y: 1 }} style={{ flex: 1,paddingTop:insets.top}}>
         <View style={styles.container}>
           <View style={styles.headerArea}>
             <View style={{ alignItems: 'flex-start', }}>
@@ -28,7 +31,10 @@ const Index = () => {
             </View>
             <View style={styles.headerLeft}>
               <Addcoins />
+              <Pressable 
+              onPress={()=> navigation.openDrawer()}>
               <SvgXml xml={svgCode} width={responsiveWidth(10)} height={responsiveWidth(10)} />
+              </Pressable>
             </View>
           </View>
         </View>
@@ -37,7 +43,7 @@ const Index = () => {
         <SetUpProfileComponent/>
         <CoinsTrack/>
         </View>
-        <View style={{borderBottomWidth:1, borderColor:'grey', borderStyle:'dashed',marginHorizontal:responsiveWidth(3),top:responsiveWidth(3),}}/>
+        {/* <View style={{borderBottomWidth:1, borderColor:'grey', borderStyle:'dashed',marginHorizontal:responsiveWidth(3),top:responsiveWidth(3),}}/> */}
         <ConcaveButtonStartChat/>
       </LinearGradient>
     </View>
@@ -58,7 +64,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: responsiveFontSize(4),
-    color: theme.colors.dark,
+    color: '#6e3f20',
     textAlign: 'center',
     fontFamily: 'cursive',
     fontWeight: '900'

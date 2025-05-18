@@ -64,17 +64,17 @@ const buttonSize = width * 0.5;
 const styles = StyleSheet.create({
     container: {
         alignItems: 'center',
-        marginVertical: responsiveWidth(6),
+        marginVertical: responsiveWidth(4),
     },
     title: {
-        color: theme.colors.grey,
+        color:'#3d3442',
         textAlign: 'center',
         fontSize: responsiveFontSize(2.3),
         fontWeight: '600',
         marginBottom: responsiveWidth(1)
     },
     subtitle: {
-        color: theme.colors.grey,
+        color:'#2d3328',
         textAlign: 'center',
         fontSize: responsiveFontSize(theme.fonts.small)
     },

@@ -6,11 +6,12 @@ import Register from '../screens/onBoarding/register';
 import LoginForm from '../screens/onBoarding/loginForm';
 import SignUpForm from '../screens/onBoarding/signUpForm';
 import Index from '../screens/home';
+import DrawerNavigator from './drawerNavigator';
 const Stack= createStackNavigator();
 
 export default function AppNavigator({user}) {
   return (
-    <Stack.Navigator initialRouteName={user?'Index':'onBoarding'}>
+    <Stack.Navigator initialRouteName={user?'MainApp':'onBoarding'}>
       {!user?(
         <>
         <Stack.Screen name='onBoarding' component={OnBoarding}/>
@@ -20,7 +21,7 @@ export default function AppNavigator({user}) {
         </>
       ):(
         <>
-        <Stack.Screen name='Index' component={Index} options={{ headerShown: false }} />
+        <Stack.Screen name='MainApp' component={DrawerNavigator} options={{ headerShown: false }} />
         </>
       )
       }
