@@ -1,5 +1,5 @@
 import React from 'react'
-import { Image, Pressable, StyleSheet, Text, TouchableNativeFeedback, View } from 'react-native'
+import { Image, Pressable, ScrollView, StyleSheet, Text, TouchableNativeFeedback, View } from 'react-native'
 import theme from '../../../theme'
 import { responsiveFontSize, responsiveWidth } from 'react-native-responsive-dimensions'
 import LinearGradient from 'react-native-linear-gradient'
@@ -13,6 +13,7 @@ import CoinsTrack from '../../components/coinsTrack'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import ConcaveButtonStartChat from '../../components/startChatButton'
 import { useNavigation } from '@react-navigation/native'
+import TipsCaraousal from '../../components/tipsCaraousal'
 
 const Index = () => {
   const uid = getAuth().currentUser?.uid;
@@ -20,9 +21,9 @@ const Index = () => {
   const insets = useSafeAreaInsets();
   const navigation = useNavigation();
   return (
-    <View style={styles.parentContainer}>
-      <LinearGradient colors={['#ffecca', '#fff6e5','#ffeac7']} start={{ x: 0, y: 0 }}
-        end={{ x: 0, y: 1 }} style={{ flex: 1,paddingTop:insets.top}}>
+    <ScrollView contentContainerStyle={styles.parentContainer}>
+      <LinearGradient colors={['#ffecca', '#fff6e5', '#ffeac7']} start={{ x: 0, y: 0 }}
+        end={{ x: 0, y: 1 }} style={{ flex: 1, paddingTop: insets.top }}>
         <View style={styles.container}>
           <View style={styles.headerArea}>
             <View style={{ alignItems: 'flex-start', }}>
@@ -31,22 +32,23 @@ const Index = () => {
             </View>
             <View style={styles.headerLeft}>
               <Addcoins />
-              <Pressable 
-              onPress={()=> navigation.openDrawer()}>
-              <SvgXml xml={svgCode} width={responsiveWidth(10)} height={responsiveWidth(10)} />
+              <Pressable
+                onPress={() => navigation.openDrawer()}>
+                <SvgXml xml={svgCode} width={responsiveWidth(10)} height={responsiveWidth(10)} />
               </Pressable>
             </View>
           </View>
         </View>
         <FindMatchComponent />
-        <View style={{display:'flex',flexDirection:'row',alignItems:'center',justifyContent:'space-between',paddingHorizontal:responsiveWidth(3),}}>
-        <SetUpProfileComponent/>
-        <CoinsTrack/>
+        <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: responsiveWidth(3), }}>
+          <SetUpProfileComponent />
+          <CoinsTrack />
         </View>
+        <TipsCaraousal />
         {/* <View style={{borderBottomWidth:1, borderColor:'grey', borderStyle:'dashed',marginHorizontal:responsiveWidth(3),top:responsiveWidth(3),}}/> */}
-        <ConcaveButtonStartChat/>
+        <ConcaveButtonStartChat />
       </LinearGradient>
-    </View>
+    </ScrollView>
   )
 }
 
@@ -54,7 +56,7 @@ export default Index
 
 const styles = StyleSheet.create({
   parentContainer: {
-    flex: 1,
+    flexGrow: 1,
     backgroundColor: theme.colors.light,
 
   },

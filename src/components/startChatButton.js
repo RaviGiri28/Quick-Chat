@@ -3,7 +3,7 @@ import { View, TouchableOpacity, Text, StyleSheet, Dimensions, Animated, Touchab
 import LinearGradient from 'react-native-linear-gradient';
 import { responsiveFontSize, responsiveWidth } from 'react-native-responsive-dimensions';
 import theme from '../../theme';
-
+import Icon from 'react-native-vector-icons/Ionicons' // Or use your preferred icon package
 const ConcaveButton = ({ onPress }) => {
     const scaleAnim = useRef(new Animated.Value(1)).current;
     const handlePressIn = () => {
@@ -28,6 +28,19 @@ const ConcaveButton = ({ onPress }) => {
         <View style={styles.container}>
             <Text style={styles.title}>Find A Match</Text>
             <Text style={styles.subtitle}>Tap below to start chatting</Text>
+            <View style={{width:'100%',justifyContent:'center',alignItems:'center',}}>
+            <View style={{position:'absolute',top:responsiveWidth(4),left:responsiveWidth(5),alignItems:'center',}}>
+            <View style={{borderWidth:1,padding:responsiveWidth(2.5),borderRadius:responsiveWidth(20),backgroundColor:theme.colors.light,borderColor:theme.colors.light,}}>
+            <Icon name="ban" size={responsiveFontSize(theme.fonts.title)} color="red" />
+            </View>
+            <Text style={{fontSize:responsiveFontSize(1.5),marginTop:responsiveWidth(0.5),}}>No Ads</Text>
+            </View>
+            <View style={{position:'absolute',top:responsiveWidth(4),right:responsiveWidth(5),alignItems:'center',}}>
+            <View style={{borderWidth:1,padding:responsiveWidth(2.5),borderRadius:responsiveWidth(20),backgroundColor:theme.colors.light,borderColor:theme.colors.light,}}>
+            <Icon name="notifications" size={responsiveFontSize(theme.fonts.title)} color="#FFD93D" />
+            </View>
+            <Text style={{fontSize:responsiveFontSize(1.5),marginTop:responsiveWidth(0.5),}}>Notifications</Text>
+            </View>
             <Animated.View style={{ transform: [{ scale: scaleAnim }] }}>
                 <View style={{borderRadius: responsiveWidth(100), marginTop: responsiveWidth(5), overflow: 'hidden', }}>
                     <TouchableNativeFeedback
@@ -54,12 +67,13 @@ const ConcaveButton = ({ onPress }) => {
                     </TouchableNativeFeedback>
                 </View>
             </Animated.View>
+            </View>
         </View>
     );
 };
 
 const { width } = Dimensions.get('window');
-const buttonSize = width * 0.5;
+const buttonSize = width * 0.43;
 
 const styles = StyleSheet.create({
     container: {
