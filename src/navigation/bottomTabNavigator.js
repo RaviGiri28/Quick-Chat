@@ -7,6 +7,7 @@ import { Pressable, StyleSheet, Text, View } from 'react-native'
 import { responsiveWidth } from 'react-native-responsive-dimensions'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import referCoins from '../screens/home/referCoins'
+import HomeLayout from '../screens/home/layout'
 
 const Tab = createBottomTabNavigator();
 const TabButton = ({ children, onPress, isLast }) => (
@@ -24,7 +25,7 @@ export default function BottomTabNavigator() {
   const insets = useSafeAreaInsets();
 
   return (
-    <Tab.Navigator initialRouteName='Home'
+    <Tab.Navigator initialRouteName='HomeTab'
       screenOptions={{
         tabBarActiveTintColor: 'tomato',
         tabBarInactiveTintColor: 'gray',
@@ -33,8 +34,8 @@ export default function BottomTabNavigator() {
         tabBarShowLabel: false,
       }}>
       <Tab.Screen
-        name="Home"
-        children={Index}
+        name="HomeTab"
+        children={HomeLayout}
         options={{
           tabBarIcon: ({ focused }) => (
             <Icon name="home" size={24} color={focused ? '#FF5A5F' : '#999'} />
