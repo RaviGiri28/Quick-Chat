@@ -3,10 +3,11 @@ import { StyleSheet, Text, View, Image, TouchableNativeFeedback, Animated } from
 import { responsiveWidth, responsiveFontSize } from 'react-native-responsive-dimensions';
 import theme from '../../../theme';
 import LinearGradient from 'react-native-linear-gradient';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const OnBoarding = ({navigation}) => {
   const scaleAnim = useRef(new Animated.Value(1)).current;
-
+  const insets = useSafeAreaInsets();
   const handlePressIn = () => {
     Animated.spring(scaleAnim, {
       toValue: 0.9,
@@ -26,7 +27,7 @@ const OnBoarding = ({navigation}) => {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container,{paddingTop:insets.top}]}>
       <View style={styles.imageContainer}>
         <Image
           source={require('../../assets/chat.png')}
@@ -38,7 +39,7 @@ const OnBoarding = ({navigation}) => {
         <Text style={{ textAlign: 'center', fontSize: responsiveFontSize(theme.fonts.body), fontWeight: '600', fontStyle: 'italic', lineHeight: responsiveWidth(6), }}>Looking for someone to talk to? RandomChat connects you with strangers for fun and interesting conversations. Tap 'Get Started' and start chatting now!</Text>
       </View>
 
-      <Animated.View style={{ transform: [{ scale: scaleAnim }] }}>
+      <Animated.View style={{ transform: [{ scale: scaleAnim }],bottom:responsiveWidth(5), }}>
         <View style={{ marginBottom: responsiveWidth(5), borderRadius: responsiveWidth(10), overflow: 'hidden', }}>
           <TouchableNativeFeedback
             background={TouchableNativeFeedback.Ripple('#FF0000')}
@@ -64,7 +65,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     backgroundColor: "#fff",
     alignItems: 'center',
-    paddingVertical: responsiveWidth(5),
+    borderWidth:1,
   },
   imageContainer: {
     borderColor: '#000',

@@ -1,40 +1,27 @@
-import React, { useEffect, useRef } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  Dimensions,
-  Image,
-} from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, StyleSheet, Dimensions } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import Animated, {
-  useSharedValue,
-  useAnimatedStyle,
-  withRepeat,
-  withTiming,
-  Easing,
-  interpolate,
-  useDerivedValue,
-} from 'react-native-reanimated';
+import Animated, {useSharedValue,useAnimatedStyle,withRepeat,withTiming,Easing,} from 'react-native-reanimated';
+import { SvgXml } from 'react-native-svg';
+import multiavatar from '@multiavatar/multiavatar';
+
 const { width } = Dimensions.get('window');
 const RADAR_RADIUS = width * 0.4;
-const AVATAR_SIZE = 40;
-
-const OrbitingAvatar = ({ source, radius, initialAngle = 0, clockwise = true }) => {
+const AVATAR_SIZE = 30;
+// OrbitingAvatar with inline SVG
+const OrbitingAvatar = ({ svg, radius, initialAngle = 0, clockwise = true, duration = 8000 }) => {
   const angle = useSharedValue(initialAngle);
   const scale = useSharedValue(1);
 
   useEffect(() => {
-    // Orbit rotation
     angle.value = withRepeat(
       withTiming(initialAngle + (clockwise ? 2 * Math.PI : -2 * Math.PI), {
-        duration: 8000,
+        duration,
         easing: Easing.linear,
       }),
       -1
     );
 
-    // Pulsing
     scale.value = withRepeat(
       withTiming(1.5, { duration: 1000, easing: Easing.inOut(Easing.ease) }),
       -1,
@@ -42,10 +29,9 @@ const OrbitingAvatar = ({ source, radius, initialAngle = 0, clockwise = true }) 
     );
   }, []);
 
-   const animatedStyle = useAnimatedStyle(() => {
+  const animatedStyle = useAnimatedStyle(() => {
     const x = radius * Math.cos(angle.value);
     const y = radius * Math.sin(angle.value);
-
     return {
       transform: [
         { translateX: x },
@@ -56,62 +42,93 @@ const OrbitingAvatar = ({ source, radius, initialAngle = 0, clockwise = true }) 
   });
 
   return (
-    <Animated.Image
-      source={source}
-         style={[styles.avatar, animatedStyle]}
-    />
+    <Animated.View style={[styles.avatarContainer, animatedStyle]}>
+      <SvgXml xml={svg} width={AVATAR_SIZE} height={AVATAR_SIZE} />
+    </Animated.View>
   );
 };
 
-const FindingMatchScreen = () => {
+
+// Radar Sweep
+const RadarSweep = () => {
+  const rotation = useSharedValue(0);
+
+  useEffect(() => {
+    rotation.value = withRepeat(
+      withTiming(360, { duration: 4000, easing: Easing.linear }),
+      -1
+    );
+  }, []);
+
+  const sweepStyle = useAnimatedStyle(() => ({
+    transform: [{ rotate: `${rotation.value}deg` }],
+  }));
+  return (
+    <Animated.View style={[styles.sweep, sweepStyle]}>
+      <View style={styles.sweepLine} />
+    </Animated.View>
+  );
+};
+
+
+const RadarFindMatch = () => {
   const navigation = useNavigation();
+  const [avatars, setAvatars] = useState([]);
 
   useEffect(() => {
     const timeout = setTimeout(() => {
-      navigation.navigate('ChatScreen'); // Replace with your chat screen
+      navigation.navigate('ChatScreen');
     }, 6000);
+
     return () => clearTimeout(timeout);
   }, []);
 
-  const avatars = [
-    { source: require('../../assets/circle.png'), radius: RADAR_RADIUS * 0.7, angle: 0, clockwise: true },
-    { source: require('../../assets/chat.png'), radius: RADAR_RADIUS * 0.7, angle: Math.PI / 2, clockwise: false },
-    { source: require('../../assets/gold.png'), radius: RADAR_RADIUS * 0.5, angle: Math.PI, clockwise: true },
-    { source: require('../../assets/interests.png'), radius: RADAR_RADIUS * 0.5, angle: (3 * Math.PI) / 2, clockwise: false },
-  ];
+  useEffect(() => {
+    const generateAvatars = () => {
+      const radii = [RADAR_RADIUS * 1, RADAR_RADIUS * 0.7, RADAR_RADIUS * 0.4];
+      const avatarsPerOrbit = 2;
+      return Array.from({ length: 10 }).map((_, i) => {
+        const orbitIndex = Math.floor(i / avatarsPerOrbit);
+        const seed = Math.random();
+        return {
+          svg: multiavatar(seed),
+          radius: radii[orbitIndex],
+          angle: Math.random() * 2 * Math.PI,
+          clockwise: Math.random() < 0.5,
+          duration: 5000 + Math.random() * 4000,
+        };
+      });
+    };
+    setAvatars(generateAvatars());
+  }, []);
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Finding your partner to talk with...</Text>
-
       <View style={styles.radarWrapper}>
-        {/* Radar Rings */}
-        {[1, 0.7, 0.4].map((factor, i) => (
+        {[1, 0.7, 0.4].map((f, i) => (
           <View
             key={i}
             style={[
               styles.ring,
               {
-                width: RADAR_RADIUS * 2 * factor,
-                height: RADAR_RADIUS * 2 * factor,
-                borderRadius: RADAR_RADIUS * factor,
+                width: RADAR_RADIUS * 2 * f,
+                height: RADAR_RADIUS * 2 * f,
+                borderRadius: RADAR_RADIUS * f,
               },
             ]}
           />
         ))}
-
-        {/* Radar Sweep */}
         <RadarSweep />
-
-        {/* Orbiting Avatars */}
         <View style={styles.avatarWrapper}>
           {avatars.map((a, i) => (
             <OrbitingAvatar
               key={i}
-              source={a.source}
+              svg={a.svg}
               radius={a.radius}
               initialAngle={a.angle}
               clockwise={a.clockwise}
+              duration={a.duration}
             />
           ))}
         </View>
@@ -119,33 +136,7 @@ const FindingMatchScreen = () => {
     </View>
   );
 };
-
-const RadarSweep = ({ radius }) => {
-  const rotation = useSharedValue(0);
-   useEffect(() => {
-    rotation.value = withRepeat(
-      withTiming(360, {
-        duration: 4000,
-        easing: Easing.linear,
-      }),
-      -1
-    );
-  }, []);
-
- const sweepStyle = useAnimatedStyle(() => {
-    return {
-      transform: [{ rotate: `${rotation.value}deg` }],
-    };
-  });
-   return (
-    <Animated.View style={[styles.sweep, { width: radius * 2, height: radius * 2 }, sweepStyle]}>
-      <View style={[styles.sweepLine, { height: radius }]} />
-    </Animated.View>
-  );
-}
-
-export default FindingMatchScreen;
-
+export default RadarFindMatch;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -185,14 +176,10 @@ const styles = StyleSheet.create({
   },
   avatarWrapper: {
     position: 'absolute',
-    top: RADAR_RADIUS - AVATAR_SIZE / 2,
-    left: RADAR_RADIUS - AVATAR_SIZE / 2,
+    top: RADAR_RADIUS,
+    left: RADAR_RADIUS,
   },
-  avatar: {
+  avatarContainer: {
     position: 'absolute',
-    width: AVATAR_SIZE,
-    height: AVATAR_SIZE,
-    borderRadius: AVATAR_SIZE / 2,
-    backgroundColor: '#fff',
   },
 });

@@ -4,6 +4,7 @@ import { responsiveFontSize, responsiveWidth } from 'react-native-responsive-dim
 import theme from '../../../theme';
 import SignUpForm from "./signUpForm";
 import LoginForm from "./loginForm";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const { width } = Dimensions.get("window");
 const SWITCH_WIDTH = width * 0.7;
@@ -14,7 +15,7 @@ const Register = () => {
   const [isSignUp, setIsSignUp]=useState(true);
   const translateX = useRef(new Animated.Value(0)).current;
   const formOpacity = useRef(new Animated.Value(1)).current;
-
+  const insets = useSafeAreaInsets();
   const handleToggle = (signUpSelected) => {
     Animated.timing(translateX, {
       toValue: signUpSelected ? 0 : BUTTON_WIDTH,
@@ -37,7 +38,7 @@ const Register = () => {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container,{paddingTop:insets.top}]}>
       <Text style={styles.heading}>{isSignUp?`Set Up Your Account`:`Welcome Back`}</Text>
       <Text style={styles.subText}>{isSignUp?`Create an account or log in to explore ${"\n"} about our app.`: `Login to acess your account`}</Text>
     
@@ -66,7 +67,6 @@ const styles = StyleSheet.create({
     flex:1,
     alignItems:'center',
     backgroundColor:'#fff',
-    paddingTop:responsiveWidth(3),
   },
   heading:{
     fontSize:responsiveFontSize(3.5),

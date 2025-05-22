@@ -14,7 +14,7 @@ export default function AppNavigator({user}) {
     <Stack.Navigator initialRouteName={user?'MainApp':'onBoarding'}>
       {!user?(
         <>
-        <Stack.Screen name='onBoarding' component={OnBoarding}/>
+        <Stack.Screen name='onBoarding' component={OnBoarding} options={{headerShown:false}}/>
         <Stack.Screen name='Register' component={Register} options={{headerShown:false}}/>
         <Stack.Screen name='LoginForm' component={LoginForm} options={{headerShown:false}}/>
         <Stack.Screen name='SignUpForm' component={SignUpForm} options={{headerShown:false}}/>
