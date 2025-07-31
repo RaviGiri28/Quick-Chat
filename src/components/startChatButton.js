@@ -1,12 +1,11 @@
 import React, { useRef } from 'react';
-import { View, TouchableOpacity, Text, StyleSheet, Dimensions, Animated, TouchableNativeFeedback } from 'react-native';
+import { View, Text, StyleSheet, Dimensions, Animated, TouchableNativeFeedback } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import { responsiveFontSize, responsiveWidth } from 'react-native-responsive-dimensions';
 import theme from '../../theme';
 import Icon from 'react-native-vector-icons/Ionicons';
-import RadarFindMatch from './radarFindMatch';
 
-const ConcaveButton = ({ onPress }) => {
+const ConcaveButton = ({ onPress, notificationPress, noAdsPress }) => {
     const scaleAnim = useRef(new Animated.Value(1)).current;
     const handlePressIn = () => {
         Animated.spring(scaleAnim, {
@@ -30,45 +29,53 @@ const ConcaveButton = ({ onPress }) => {
         <View style={styles.container}>
             <Text style={styles.title}>Find A Match</Text>
             <Text style={styles.subtitle}>Tap below to start chatting</Text>
-            <View style={{width:'100%',justifyContent:'center',alignItems:'center',}}>
-            <View style={{position:'absolute',top:responsiveWidth(4),left:responsiveWidth(5),alignItems:'center',}}>
-            <View style={{borderWidth:1,padding:responsiveWidth(2.5),borderRadius:responsiveWidth(20),backgroundColor:theme.colors.light,borderColor:theme.colors.light,}}>
-            <Icon name="ban" size={responsiveFontSize(theme.fonts.title)} color="red" />
-            </View>
-            <Text style={{fontSize:responsiveFontSize(1.5),marginTop:responsiveWidth(0.5),}}>No Ads</Text>
-            </View>
-            <View style={{position:'absolute',top:responsiveWidth(4),right:responsiveWidth(5),alignItems:'center',}}>
-            <View style={{borderWidth:1,padding:responsiveWidth(2.5),borderRadius:responsiveWidth(20),backgroundColor:theme.colors.light,borderColor:theme.colors.light,}}>
-            <Icon name="notifications" size={responsiveFontSize(theme.fonts.title)} color="#FFD93D" />
-            </View>
-            <Text style={{fontSize:responsiveFontSize(1.5),marginTop:responsiveWidth(0.5),}}>Notifications</Text>
-            </View>
-            <Animated.View style={{ transform: [{ scale: scaleAnim }] }}>
-                <View style={{borderRadius: responsiveWidth(100), marginTop: responsiveWidth(5), overflow: 'hidden', }}>
-                    <TouchableNativeFeedback
-                        background={TouchableNativeFeedback.Ripple('rgba(255,94,0,0.2)')}
-                        onPress={onPress}
-                        onPressIn={handlePressIn}
-                        onPressOut={handlePressOut}>
-                        <View style={[styles.outerRing, {
-                            backgroundColor: 'rgba(255,94,0,0.2)', shadowColor: '#FF5400',
-                        }]}>
-                            <View style={styles.buttonContainer}>
-                                <LinearGradient
-                                    colors={['#FF7B00', '#FF0054']}
-                                    start={{ x: 0.1, y: 0.1 }}
-                                    end={{ x: 0.9, y: 0.9 }}
-                                    style={styles.concaveGradient}
-                                >
-                                    <View style={[styles.innerDepression, { backgroundColor: 'rgba(0,0,0,0.2)', borderColor: 'rgba(255,200,150,0.4)' }]}>
-                                        <Text style={[styles.buttonText, { textShadowColor: 'rgba(150,50,0,0.6)' }]}>Start Chat</Text>
-                                    </View>
-                                </LinearGradient>
-                            </View>
-                        </View>
-                    </TouchableNativeFeedback>
+            <View style={{ width: '100%', justifyContent: 'center', alignItems: 'center', }}>
+                <TouchableNativeFeedback
+                    onPress={noAdsPress}
+                    background={TouchableNativeFeedback.Ripple('#0000001A')}>
+                <View style={{ position: 'absolute', top: responsiveWidth(4), left: responsiveWidth(5), alignItems: 'center', }}>
+                    <View style={{ borderWidth: 1, padding: responsiveWidth(2.5), borderRadius: responsiveWidth(20), backgroundColor: theme.colors.light, borderColor: theme.colors.light, }}>
+                        <Icon name="ban" size={responsiveFontSize(theme.fonts.title)} color="red" />
+                    </View>
+                    <Text style={{ fontSize: responsiveFontSize(1.5), marginTop: responsiveWidth(0.5), }}>No Ads</Text>
                 </View>
-            </Animated.View>
+                </TouchableNativeFeedback>
+                <TouchableNativeFeedback
+                    onPress={notificationPress}
+                    background={TouchableNativeFeedback.Ripple('#0000001A')}>
+                    <View style={{ position: 'absolute', top: responsiveWidth(4), right: responsiveWidth(5), alignItems: 'center', }}>
+                        <View style={{ borderWidth: 1, padding: responsiveWidth(2.5), borderRadius: responsiveWidth(20), backgroundColor: theme.colors.light, borderColor: theme.colors.light, }}>
+                            <Icon name="notifications" size={responsiveFontSize(theme.fonts.title)} color="#FFD93D" />
+                        </View>
+                        <Text style={{ fontSize: responsiveFontSize(1.5), marginTop: responsiveWidth(0.5), }}>Notifications</Text>
+                    </View>
+                </TouchableNativeFeedback>
+                <Animated.View style={{ transform: [{ scale: scaleAnim }] }}>
+                    <View style={{ borderRadius: responsiveWidth(100), marginTop: responsiveWidth(5), overflow: 'hidden', }}>
+                        <TouchableNativeFeedback
+                            background={TouchableNativeFeedback.Ripple('rgba(255,94,0,0.2)')}
+                            onPress={onPress}
+                            onPressIn={handlePressIn}
+                            onPressOut={handlePressOut}>
+                            <View style={[styles.outerRing, {
+                                backgroundColor: 'rgba(255,94,0,0.2)', shadowColor: '#FF5400',
+                            }]}>
+                                <View style={styles.buttonContainer}>
+                                    <LinearGradient
+                                        colors={['#FF7B00', '#FF0054']}
+                                        start={{ x: 0.1, y: 0.1 }}
+                                        end={{ x: 0.9, y: 0.9 }}
+                                        style={styles.concaveGradient}
+                                    >
+                                        <View style={[styles.innerDepression, { backgroundColor: 'rgba(0,0,0,0.2)', borderColor: 'rgba(255,200,150,0.4)' }]}>
+                                            <Text style={[styles.buttonText, { textShadowColor: 'rgba(150,50,0,0.6)' }]}>Start Chat</Text>
+                                        </View>
+                                    </LinearGradient>
+                                </View>
+                            </View>
+                        </TouchableNativeFeedback>
+                    </View>
+                </Animated.View>
             </View>
         </View>
     );
@@ -83,14 +90,14 @@ const styles = StyleSheet.create({
         marginVertical: responsiveWidth(4),
     },
     title: {
-        color:'#3d3442',
+        color: '#3d3442',
         textAlign: 'center',
         fontSize: responsiveFontSize(2.3),
         fontWeight: '600',
         marginBottom: responsiveWidth(1)
     },
     subtitle: {
-        color:'#2d3328',
+        color: '#2d3328',
         textAlign: 'center',
         fontSize: responsiveFontSize(theme.fonts.small)
     },

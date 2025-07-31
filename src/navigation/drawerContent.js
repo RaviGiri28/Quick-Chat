@@ -73,7 +73,7 @@ export default function DrawerContent(props) {
             label: 'Help Center',
             icon: 'help-circle',
             iconType: 'feather',
-            screenName: 'Help',
+            screenName: 'Support',
         },
     ];
 

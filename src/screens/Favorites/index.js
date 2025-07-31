@@ -1,14 +1,14 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 
-const referCoins = () => {
+const Favorites = () => {
   return (
     <View>
-      <Text>referCoins</Text>
+      <Text>Favorites</Text>
     </View>
   )
 }
 
-export default referCoins
+export default Favorites;
 
 const styles = StyleSheet.create({})

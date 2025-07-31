@@ -15,16 +15,15 @@ import ConcaveButtonStartChat from '../../components/startChatButton'
 import { useNavigation } from '@react-navigation/native'
 import TipsCaraousal from '../../components/tipsCaraousal'
 import GetSupport from '../../components/getSupport'
-
 const Index = () => {
   const uid = getAuth().currentUser?.uid;
   const svgCode = multiavatar(uid)
-  const insets = useSafeAreaInsets();
   const navigation = useNavigation();
+  const insets = useSafeAreaInsets();
   return (
     <View style={styles.parentContainer}>
       <LinearGradient colors={['#ffecca', '#fff6e5', '#ffeac7']} start={{ x: 0, y: 0 }}
-        end={{ x: 0, y: 1 }} style={{ flex: 1, paddingTop: insets.top,}}>
+        end={{ x: 0, y: 1 }} style={{ flex: 1, paddingTop: insets.top, }}>
         <View style={styles.container}>
           <View style={styles.headerArea}>
             <View style={{ alignItems: 'flex-start', }}>
@@ -40,25 +39,22 @@ const Index = () => {
             </View>
           </View>
         </View>
-
-        <ScrollView contentContainerStyle={{flexGrow:1,}}>
-        <FindMatchComponent />
-        <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: responsiveWidth(3), }}>
-          <SetUpProfileComponent />
-          <CoinsTrack />
-        </View>
-        <TipsCaraousal />
-        {/* <View style={{borderBottomWidth:1, borderColor:'grey', borderStyle:'dashed',marginHorizontal:responsiveWidth(3),top:responsiveWidth(3),}}/> */}
-        <ConcaveButtonStartChat />
-        <GetSupport/>
+        <ScrollView contentContainerStyle={{ flexGrow: 1, }}>
+          <FindMatchComponent />
+          <View style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: responsiveWidth(3), }}>
+            <SetUpProfileComponent />
+            <CoinsTrack />
+          </View>
+          <TipsCaraousal />
+          {/* <View style={{borderBottomWidth:1, borderColor:'grey', borderStyle:'dashed',marginHorizontal:responsiveWidth(3),top:responsiveWidth(3),}}/> */}
+          <ConcaveButtonStartChat onPress={()=>navigation.navigate('RadarFindMatch')} />
+          <GetSupport />
         </ScrollView>
       </LinearGradient>
     </View>
   )
 }
-
 export default Index
-
 const styles = StyleSheet.create({
   parentContainer: {
     flex: 1,

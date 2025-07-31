@@ -1,13 +1,12 @@
 import React from 'react'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import Icon from 'react-native-vector-icons/Ionicons' // Or use your preferred icon package
-import Index from '../screens/home'
-import Profile from '../screens/home/profile'
 import { Pressable, StyleSheet, Text, View } from 'react-native'
 import { responsiveWidth } from 'react-native-responsive-dimensions'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
-import referCoins from '../screens/home/referCoins'
-import HomeLayout from '../screens/home/layout'
+import HomeScreen from '../screens/home'
+import Wallet from '../screens/Wallet'
+import Profile from '../screens/Profile'
 
 const Tab = createBottomTabNavigator();
 const TabButton = ({ children, onPress, isLast }) => (
@@ -35,7 +34,7 @@ export default function BottomTabNavigator() {
       }}>
       <Tab.Screen
         name="HomeTab"
-        children={HomeLayout}
+        children={HomeScreen}
         options={{
           tabBarIcon: ({ focused }) => (
             <Icon name="home" size={24} color={focused ? '#FF5A5F' : '#999'} />
@@ -45,8 +44,9 @@ export default function BottomTabNavigator() {
       />
       <Tab.Screen
         name="Wallet"
-        children={referCoins}
+        children={Wallet}
         options={{
+          headerShown:true,
           tabBarIcon: ({ focused }) => (
             <Icon name="wallet" size={24} color={focused ? '#FF5A5F' : '#999'} />
           ),
@@ -57,6 +57,7 @@ export default function BottomTabNavigator() {
         name="Profile"
         component={Profile}
         options={{
+          headerShown:true,
           tabBarIcon: ({ focused }) => (
             <Icon name="person" size={24} color={focused ? '#FF5A5F' : '#999'} />
           ),

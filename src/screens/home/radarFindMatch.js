@@ -77,7 +77,7 @@ const RadarFindMatch = () => {
 
   useEffect(() => {
     const timeout = setTimeout(() => {
-      navigation.navigate('ChatScreen');
+      navigation.navigate('chats');
     }, 6000);
 
     return () => clearTimeout(timeout);
